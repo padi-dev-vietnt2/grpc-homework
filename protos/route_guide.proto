@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.routeguide";
+option java_outer_classname = "RouteGuideProto";
+option objc_class_prefix = "RTG";
+
+package routeguide;
+
+// Interface exported by the server.
+service RouteGuide {
+  // A Bidirectional streaming RPC.
+  //
+  // Accepts a stream of Points on a route being traversed, returning a
+  // Accepts a stream of RouteSummary.
+  rpc RecordRoute(stream Point) returns (stream RouteSummary) {}
+}
+
+// Points are represented as latitude-longitude pairs in the E7 representation
+// (degrees multiplied by 10**7 and rounded to the nearest integer).
+// Latitudes should be in the range +/- 90 degrees and longitude should be in
+// the range +/- 180 degrees (inclusive).
+message Point {
+  int32 latitude = 1;
+  int32 longitude = 2;
+}
+
+// A RouteSummary is received in response to a RecordRoute rpc.
+//
+// It contains the number of individual points received, and the 
+// total distance covered as the cumulative sum of the distance between each point.
+message RouteSummary {
+  // The number of points received.
+  int32 pointCount = 1;
+
+  // The distance covered in metres.
+  int32 distance = 3;
+}
